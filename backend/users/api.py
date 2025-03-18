@@ -11,6 +11,7 @@ users_router = Router()
 
 @users_router.post('/', response={200: dict, 400: dict, 500: dict})
 def create_user(request, type_user_schema: TypeUserSchema):
+    """Rota para criar um usuário."""
     user = User(**type_user_schema.user.dict())
     user.password = make_password(user.password)
     try:
@@ -27,4 +28,8 @@ def create_user(request, type_user_schema: TypeUserSchema):
     except Exception as e:
         return 500, {'errors': str(e)}
 
-    return {'user_name': user.username}
+    return {
+        'user_id': user.id,
+        'username': user.username,
+        'role': type_user_schema.type_user.type  
+    }
