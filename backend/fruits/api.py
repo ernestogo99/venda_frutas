@@ -73,9 +73,9 @@ def update_fruit(request,id:int,fruit_update:UpdateFrutaSchema):
     return fruta
     
     
-@fruits_router.get("/", response=List[FrutaSchema])
+@fruits_router.get("/filter", response=List[FrutaSchema])
 def list_fruits(request, nome: str = None, classificacao: str = None):
-    """Rota para filtrar as frutas por nome."""
+    """Rota para filtrar as frutas por nome e por classificação."""
     
     query = Q()
     if nome:
@@ -84,4 +84,10 @@ def list_fruits(request, nome: str = None, classificacao: str = None):
         query &= Q(classificacao=classificacao)
 
     frutas = Frutas.objects.filter(query)
+    return frutas
+
+@fruits_router.get('/disponiveis/',response=List[FrutaSchema])
+def get_available_fruits(request):
+    """Rota para obter frutas disponíveis (quantidade maior que 0)."""
+    frutas=Frutas.objects.filter(quantidade_disponivel__gt=0)
     return frutas
