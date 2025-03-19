@@ -26,8 +26,8 @@ def check_permission(request, permission):
 
 
 
-@fruits_router.post('/', response={200:FrutaSchema,401:dict,403:dict},auth=auth)
-def add_fruit(request, fruit: FrutaSchema):
+@fruits_router.post('/', response={200:UpdateFrutaSchema,401:dict,403:dict},auth=auth)
+def add_fruit(request, fruit: UpdateFrutaSchema):
     """Rota para adicionar uma fruta."""
     
     tem_permissao,erro=check_permission(request,'cadastrar_fruta')
@@ -91,3 +91,10 @@ def get_available_fruits(request):
     """Rota para obter frutas disponíveis (quantidade maior que 0)."""
     frutas=Frutas.objects.filter(quantidade_disponivel__gt=0)
     return frutas
+
+
+@fruits_router.get('/{id}',response=FrutaSchema)
+def get_fruit_by_id(request,id):
+    """Rota para obter frutas por id."""
+    fruta=get_object_or_404(Frutas,id=id)
+    return fruta
