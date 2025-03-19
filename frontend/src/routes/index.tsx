@@ -5,6 +5,7 @@ import { useDrawercontext } from "../shared/contexts/drawercontext";
 import { useEffect } from "react";
 import { ListagemVendas } from "../pages/vendas/vendas";
 import FrutaForm from "../pages/frutas/cadastrar";
+import EditFrutaForm from "../pages/frutas/editar";
 
 const AppRoutes = () => {
   const { setdraweroptions } = useDrawercontext();
@@ -31,6 +32,7 @@ const AppRoutes = () => {
       <Route path="/frutas" element={<Frutas />}></Route>
       <Route path="/vendas" element={<ListagemVendas />}></Route>
       <Route path="/frutas/cadastro" element={<FrutaForm />}></Route>
+      <Route path="/frutas/editar/:id" element={<EditFrutaForm />}></Route>
     </Routes>
   );
 };

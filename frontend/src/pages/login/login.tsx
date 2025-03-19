@@ -1,25 +1,42 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { authService } from "../../shared/services/authservice";
 
 const LoginScreen: React.FC = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+
+    try {
+      const { username, password } = formData;
+
+      const { access, user } = await authService.signIn(username, password);
+
+      console.log("Usuário logado com sucesso:", user);
+      console.log("Token de acesso:", access);
+
+      localStorage.setItem("access_token", access);
+      sessionStorage.setItem("access_token", access);
+
+      navigate("/frutas");
+    } catch (err: any) {
+      setError("Credenciais inválidas. Tente novamente.");
+    }
   };
 
   return (
@@ -92,6 +109,11 @@ const LoginScreen: React.FC = () => {
               },
             }}
           />
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth

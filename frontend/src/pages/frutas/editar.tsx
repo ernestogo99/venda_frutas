@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -17,9 +17,9 @@ import { Fruta } from "../../shared/interfaces/fruta";
 import { FrutasService } from "../../shared/services/frutaservice";
 import { Menulateral } from "../../shared/components";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const FrutaForm: React.FC = () => {
+const EditFrutaForm: React.FC = () => {
   const [formData, setFormData] = useState<Fruta>({
     nome: "",
     classificacao: "e",
@@ -30,6 +30,24 @@ const FrutaForm: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      FrutasService.getFrutaById(Number(id))
+        .then((response) => {
+          if (response instanceof Error) {
+            toast.error("Erro ao carregar os dados da fruta.");
+          } else {
+            setFormData(response);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [id]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -66,20 +84,13 @@ const FrutaForm: React.FC = () => {
 
     setLoading(true);
 
-    FrutasService.addFruta(formData)
+    FrutasService.ediFruta(Number(id), formData)
       .then((response) => {
         if (response instanceof Error) {
-          toast.error("Erro ao cadastrar a fruta. Tente novamente.");
+          toast.error("Erro ao editar a fruta. Tente novamente.");
         } else {
-          toast.success("Fruta cadastrada com sucesso!");
+          toast.success("Fruta editada com sucesso!");
           setTimeout(() => {
-            setFormData({
-              nome: "",
-              classificacao: "e",
-              fresca: true,
-              quantidade_disponivel: 0,
-              valor_venda: 0.0,
-            });
             navigate("/frutas");
           }, 2000);
         }
@@ -106,7 +117,7 @@ const FrutaForm: React.FC = () => {
             borderRadius={2}
           >
             <Typography variant="h5" fontWeight="bold" mb={2}>
-              Cadastrar Nova Fruta
+              Editar Fruta
             </Typography>
 
             <TextField
@@ -172,7 +183,7 @@ const FrutaForm: React.FC = () => {
               sx={{ mt: 2 }}
               disabled={loading}
             >
-              {loading ? "Cadastrando..." : "Cadastrar"}
+              {loading ? "Atualizando..." : "Atualizar"}
             </Button>
           </Box>
         </Container>
@@ -181,4 +192,4 @@ const FrutaForm: React.FC = () => {
   );
 };
 
-export default FrutaForm;
+export default EditFrutaForm;
