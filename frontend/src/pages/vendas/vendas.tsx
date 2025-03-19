@@ -1,5 +1,4 @@
 import {
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -8,27 +7,35 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Layoutbasedepagina } from "../../shared/layout";
 import { Ferramentasdalistagem, Menulateral } from "../../shared/components";
-import { useNavigate, useSearchParams } from "react-router-dom";
-
-import { Delete, Edit } from "@mui/icons-material";
+import { useSearchParams } from "react-router-dom";
+import { VendaService } from "../../shared/services/vendaservice";
+import { RelatorioVenda } from "../../shared/interfaces/venda";
+import toast from "react-hot-toast";
 
 export const ListagemVendas: React.FC = () => {
-  const [searchParans, setSearchparans] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setLoading] = useState(true);
+  const [rows, setRows] = useState<RelatorioVenda[]>([]);
 
-  const [totalcount, setTotalcount] = useState(0);
-  const [isloading, setloading] = useState(true);
-  const [rows, setRows] = useState([
-    { id: 1, nomeCompleto: "João Silva", email: "joao@email.com" },
-    { id: 2, nomeCompleto: "Maria Souza", email: "maria@email.com" },
-    { id: 3, nomeCompleto: "Carlos Pereira", email: "carlos@email.com" },
-  ]);
-  const navigate = useNavigate();
-  const busca = useMemo(() => {
-    return searchParans.get("busca") || "";
-  }, [searchParans]);
+  const busca = searchParams.get("busca") || "";
+
+  useEffect(() => {
+    VendaService.getRelatorio().then((response) => {
+      if (response instanceof Error) {
+        toast.error(response.message);
+        setRows([]);
+      } else {
+        console.log(response);
+        setRows(response);
+        setTotalCount(response.length);
+      }
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <Menulateral>
@@ -40,7 +47,7 @@ export const ListagemVendas: React.FC = () => {
             mostrarbotaonovo={false}
             textodabusca={busca}
             aomudartextodebusca={(texto) =>
-              setSearchparans({ busca: texto, pagina: "1" }, { replace: true })
+              setSearchParams({ busca: texto, pagina: "1" }, { replace: true })
             }
           />
         }
@@ -53,35 +60,26 @@ export const ListagemVendas: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Frutas vendidas</TableCell>
+                <TableCell>Frutas Vendidas</TableCell>
                 <TableCell>Quantidade</TableCell>
                 <TableCell>Valor</TableCell>
-                <TableCell>Horário</TableCell>
+                <TableCell>Data</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id}>
+              {rows.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{row.fruta_nome}</TableCell>
+                  <TableCell>{row.quantidade}</TableCell>
+                  <TableCell>{(Number(row.total) || 0).toFixed(2)}</TableCell>
                   <TableCell>
-                    <IconButton size="small">
-                      <Delete />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        navigate(`/pessoas/detalhe/${row.id}`);
-                      }}
-                      size="small"
-                    >
-                      <Edit />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell>{row.nomeCompleto}</TableCell>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.email}</TableCell>
+                    {new Date(row.data).toLocaleString()}
+                  </TableCell>{" "}
+                  {}
                 </TableRow>
               ))}
             </TableBody>
-            {totalcount === 0 && !isloading && (
+            {totalCount === 0 && !isLoading && (
               <caption>Listagem vazia</caption>
             )}
           </Table>

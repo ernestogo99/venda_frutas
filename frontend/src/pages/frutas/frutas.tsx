@@ -109,9 +109,7 @@ export const Frutas: React.FC = () => {
                       <Edit />
                     </IconButton>
                     <IconButton
-                      onClick={() =>
-                        console.log(`Excluir fruta ID: ${fruta.id}`)
-                      }
+                      onClick={() => navigate("/frutas/vendas")}
                       size="small"
                     >
                       <Sell />
