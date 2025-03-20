@@ -20,6 +20,8 @@ import toast from "react-hot-toast";
 
 export const Frutas: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [classificacaoSelecionada, setClassificacaoSelecionada] = useState("");
+
   const [isLoading, setLoading] = useState(true);
   const [rows, setRows] = useState<Fruta[]>([]);
 
@@ -40,10 +42,15 @@ export const Frutas: React.FC = () => {
   }, []);
 
   const filteredRows = useMemo(() => {
-    return rows.filter((fruta) =>
-      fruta.nome.toLowerCase().includes(busca.toLowerCase())
-    );
-  }, [rows, busca]);
+    return rows.filter((fruta) => {
+      const buscaMatch = fruta.nome.toLowerCase().includes(busca.toLowerCase());
+      const classificacaoMatch =
+        !classificacaoSelecionada ||
+        fruta.classificacao === classificacaoSelecionada;
+
+      return buscaMatch && classificacaoMatch;
+    });
+  }, [rows, busca, classificacaoSelecionada]);
 
   const handleDelete = useCallback((id: number) => {
     if (window.confirm("deseja excluir?")) {
@@ -73,6 +80,9 @@ export const Frutas: React.FC = () => {
               setSearchParams({ busca: texto, pagina: "1" }, { replace: true })
             }
             textobotaonovo="Nova fruta"
+            mostrarselectclassificacao
+            classificacaoSelecionada={classificacaoSelecionada}
+            aomudarclassificacao={setClassificacaoSelecionada}
           />
         }
       >

@@ -7,6 +7,7 @@ import { ListagemVendas } from "../pages/vendas/vendas";
 import FrutaForm from "../pages/frutas/cadastrar";
 import EditFrutaForm from "../pages/frutas/editar";
 import VendaForm from "../pages/vendas/venderFrutas";
+import CadastroScreen from "../pages/login/cadastrarusuario";
 
 const AppRoutes = () => {
   const { setdraweroptions } = useDrawercontext();
@@ -40,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/frutas/cadastro" element={<FrutaForm />}></Route>
       <Route path="/frutas/editar/:id" element={<EditFrutaForm />}></Route>
       <Route path="/frutas/vendas" element={<VendaForm />}></Route>
+      <Route path="/cadastro" element={<CadastroScreen />}></Route>
     </Routes>
   );
 };

@@ -1,12 +1,25 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../../shared/services/authservice";
+import toast from "react-hot-toast";
 
-const LoginScreen: React.FC = () => {
+const CadastroScreen: React.FC = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    type_user: "vendedor",
   });
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -19,24 +32,34 @@ const LoginScreen: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      type_user: e.target.value as string,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const { username, password } = formData;
+    const { username, password, type_user } = formData;
 
-      const { access, user } = await authService.signIn(username, password);
-
-      console.log("Usuário logado com sucesso:", user);
-      console.log("Token de acesso:", access);
-
-      localStorage.setItem("access_token", access);
-      sessionStorage.setItem("access_token", access);
-
-      navigate("/frutas");
-    } catch (err: any) {
-      setError("Credenciais inválidas. Tente novamente.");
-    }
+    authService
+      .createUser({
+        user: { username, password },
+        type_user: { type: type_user },
+      })
+      .then((response) => {
+        console.log(response);
+        toast.success("Usuário cadastrado com sucesso");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      })
+      .catch((err: any) => {
+        setError(err.message);
+        toast.error("Erro ao cadastrar o usuário");
+      });
   };
 
   return (
@@ -69,7 +92,7 @@ const LoginScreen: React.FC = () => {
             variant="h4"
             fontWeight="bold"
           >
-            Login
+            Cadastro de Usuário
           </Typography>
         </Box>
         <form onSubmit={handleSubmit}>
@@ -109,6 +132,24 @@ const LoginScreen: React.FC = () => {
               },
             }}
           />
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            sx={{ backgroundColor: "#fff", borderRadius: 2 }}
+          >
+            <InputLabel>Tipo de Usuário</InputLabel>
+            <Select
+              value={formData.type_user}
+              onChange={handleSelectChange}
+              label="Tipo de Usuário"
+              name="type_user"
+            >
+              <MenuItem value="vendedor">Vendedor</MenuItem>
+              <MenuItem value="admin">Administrador</MenuItem>
+            </Select>
+          </FormControl>
+
           {error && (
             <Typography color="error" variant="body2" sx={{ mt: 1 }}>
               {error}
@@ -125,18 +166,18 @@ const LoginScreen: React.FC = () => {
               mb: 2,
             }}
           >
-            Entrar
+            Cadastrar
           </Button>
           <Button
             fullWidth
             variant="contained"
+            onClick={() => navigate("/login")}
             color="primary"
-            onClick={() => navigate("/cadastro")}
             sx={{
               borderRadius: 2,
             }}
           >
-            Cadastre-se
+            Voltar
           </Button>
         </form>
       </Container>
@@ -144,4 +185,4 @@ const LoginScreen: React.FC = () => {
   );
 };
 
-export default LoginScreen;
+export default CadastroScreen;

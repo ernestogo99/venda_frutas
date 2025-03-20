@@ -1,7 +1,8 @@
 // src/services/authService.ts
 
 import axios from "axios";
-import { UserData } from "../interfaces/user";
+import { CreateUserPayload, UserData } from "../interfaces/user";
+import { api } from "./axiosconfig/axiosconfig";
 
 const API_URL = "http://127.0.0.1:8000/api/login/";
 
@@ -41,8 +42,21 @@ const logout = () => {
   window.location.href = "/login";
 };
 
+const createUser = async (
+  userData: CreateUserPayload
+): Promise<CreateUserPayload | Error> => {
+  try {
+    const { data } = await api.post("/users/", userData);
+    return data;
+  } catch (error) {
+    console.error(error);
+    return new Error("erro ao criar o usuario");
+  }
+};
+
 export const authService = {
   signIn,
   getUserData,
   logout,
+  createUser,
 };

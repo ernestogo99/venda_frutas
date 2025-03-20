@@ -7,7 +7,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Layoutbasedepagina } from "../../shared/layout";
 import { Ferramentasdalistagem, Menulateral } from "../../shared/components";
 import { useSearchParams } from "react-router-dom";
@@ -36,6 +36,12 @@ export const ListagemVendas: React.FC = () => {
       setLoading(false);
     });
   }, []);
+
+  const filteredRows = useMemo(() => {
+    return rows.filter((fruta) =>
+      fruta.fruta_nome.toLowerCase().includes(busca.toLowerCase())
+    );
+  }, [rows, busca]);
 
   return (
     <Menulateral>
@@ -67,7 +73,7 @@ export const ListagemVendas: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
+              {filteredRows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.fruta_nome}</TableCell>
                   <TableCell>{row.quantidade}</TableCell>

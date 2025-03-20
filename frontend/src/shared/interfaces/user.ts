@@ -5,3 +5,13 @@ export interface UserData {
     type: string;
   };
 }
+
+export interface CreateUserPayload {
+  user: {
+    username: string;
+    password: string;
+  };
+  type_user: {
+    type: string;
+  };
+}
