@@ -7,6 +7,8 @@ class FrutaSchema(ModelSchema):
         model=Frutas
         fields='__all__'
         
+   
+        
         
         
 class UpdateFrutaSchema(ModelSchema):

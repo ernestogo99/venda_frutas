@@ -7,7 +7,7 @@ from .models import User
 from rolepermissions.roles import assign_role
 from rolepermissions.exceptions import RoleDoesNotExist
 
-users_router = Router()
+users_router = Router(tags=['User'])
 
 @users_router.post('/', response={200: dict, 400: dict, 500: dict})
 def create_user(request, type_user_schema: TypeUserSchema):

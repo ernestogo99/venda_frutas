@@ -25,7 +25,6 @@ interface Ibarradeferramentasprops {
 
   mostrarbotaologout?: boolean;
 
-  // Novas props para o select de classificação
   mostrarselectclassificacao?: boolean;
   classificacaoSelecionada?: string;
   aomudarclassificacao?: (novaClassificacao: string) => void;

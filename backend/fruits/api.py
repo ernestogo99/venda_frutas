@@ -9,7 +9,7 @@ from django.db.models import Q
 from login.auth import JWTAuth
 from django.contrib.auth.models import AnonymousUser
 
-fruits_router = Router()
+fruits_router = Router(tags=['Frutas'])
 auth=JWTAuth()
 
 

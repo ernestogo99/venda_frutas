@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .schemas import LoginSchema
 
-auth_router = Router()
+auth_router = Router(tags=['Login'])
 
 @auth_router.post('/', response={200: dict, 401: dict})
 def login(request, data: LoginSchema):

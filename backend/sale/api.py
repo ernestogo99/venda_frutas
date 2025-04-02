@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from decimal import Decimal
 from typing import List
 
-venda_router=Router()
+venda_router=Router(tags=['Vendas'])
 
 
 @venda_router.post('/',response={200:ModelVendaSchema,400:dict,401:dict,403:dict},auth=auth)
