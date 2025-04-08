@@ -71,7 +71,8 @@ const VendaForm: React.FC = () => {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        height="100vh"
+        height={550}
+        overflow="auto"
       >
         <Container maxWidth="sm">
           <Box

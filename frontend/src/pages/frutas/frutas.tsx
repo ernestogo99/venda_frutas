@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Layoutbasedepagina } from "../../shared/layout";
-import { Ferramentasdalistagem, Menulateral } from "../../shared/components";
+import {
+  DeleteMessage,
+  Ferramentasdalistagem,
+  Menulateral,
+} from "../../shared/components";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Delete, Edit, Sell } from "@mui/icons-material";
@@ -24,6 +28,8 @@ export const Frutas: React.FC = () => {
 
   const [isLoading, setLoading] = useState(true);
   const [rows, setRows] = useState<Fruta[]>([]);
+  const [isModalOpen, setIsmodalOpen] = useState(false);
+  const [selectedFruit, setSelectedFruit] = useState<Fruta | null>();
 
   const navigate = useNavigate();
 
@@ -52,20 +58,33 @@ export const Frutas: React.FC = () => {
     });
   }, [rows, busca, classificacaoSelecionada]);
 
-  const handleDelete = useCallback((id: number) => {
-    if (window.confirm("deseja excluir?")) {
-      FrutasService.deleteFruta(id).then((response) => {
+  const handleOpenModal = (fruit: Fruta) => {
+    setSelectedFruit(fruit);
+    setIsmodalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedFruit(null);
+    setIsmodalOpen(false);
+  };
+
+  const handleDelete = useCallback(() => {
+    if (selectedFruit) {
+      FrutasService.deleteFruta(selectedFruit.id!).then((response) => {
         if (response instanceof Error) {
           console.log(response);
           toast.error(response.message);
         } else {
           setRows((oldRows) => {
-            return oldRows.filter((oldLisItem) => oldLisItem.id !== id);
+            return oldRows.filter(
+              (oldLisItem) => oldLisItem.id !== selectedFruit.id
+            );
           });
         }
+        handleCloseModal();
       });
     }
-  }, []);
+  }, [selectedFruit]);
 
   return (
     <Menulateral>
@@ -107,7 +126,7 @@ export const Frutas: React.FC = () => {
                 <TableRow key={fruta.id}>
                   <TableCell>
                     <IconButton
-                      onClick={() => handleDelete(fruta.id!)}
+                      onClick={() => handleOpenModal(fruta)}
                       size="small"
                     >
                       <Delete />
@@ -143,6 +162,12 @@ export const Frutas: React.FC = () => {
           </Table>
         </TableContainer>
       </Layoutbasedepagina>
+      <DeleteMessage
+        show={isModalOpen}
+        Onclose={handleCloseModal}
+        tittle="Deseja excluir essa fruta?"
+        handleDelete={handleDelete}
+      ></DeleteMessage>
     </Menulateral>
   );
 };
