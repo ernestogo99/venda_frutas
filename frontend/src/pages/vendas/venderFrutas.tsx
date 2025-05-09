@@ -30,11 +30,11 @@ const VendaForm: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    FrutasService.getAllFrutas().then((result) => {
-      if (result instanceof Error) {
-        toast.error("Erro ao carregar as frutas");
+    FrutasService.getAllFrutas().then((response) => {
+      if (response instanceof Error) {
+        toast.error(response.message);
       } else {
-        setFrutas(result);
+        setFrutas(response);
       }
     });
   }, []);

@@ -8,9 +8,12 @@ const getAllFrutas = async (): Promise<Fruta[] | Error> => {
       return data;
     }
     return new Error("erro ao obter as frutas ");
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao obter as frutas ");
+
+    const errorMessage =
+      error.response?.data?.error || "Erro ao obter as  fruta";
+    return new Error(errorMessage);
   }
 };
 
@@ -18,9 +21,12 @@ const addFruta = async (fruta: Omit<Fruta, "id">): Promise<Fruta | Error> => {
   try {
     const { data } = await api.post("/frutas/", fruta);
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao adicionar a  fruta");
+
+    const errorMessage =
+      error.response?.data?.error || "Erro ao adicionar a fruta";
+    return new Error(errorMessage);
   }
 };
 
@@ -28,9 +34,12 @@ const deleteFruta = async (id: number): Promise<any> => {
   try {
     const { data } = await api.delete(`/frutas/${id}`);
     return data;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao excluir a fruta");
+
+    const errorMessage =
+      error.response?.data?.error || "Erro ao excluir a fruta";
+    return new Error(errorMessage);
   }
 };
 
@@ -38,9 +47,10 @@ const ediFruta = async (id: number, fruta: Fruta): Promise<Fruta | Error> => {
   try {
     const { data } = await api.put(`/frutas/${id}`, fruta);
     return data;
-  } catch (error) {
-    console.error(error);
-    return new Error("erro ao atualizar a fruta");
+  } catch (error: any) {
+    const errorMessage =
+      error.response?.data?.error || "Erro ao editar a fruta";
+    return new Error(errorMessage);
   }
 };
 
@@ -51,9 +61,11 @@ const getFrutaById = async (id: number): Promise<Fruta | Error> => {
       return data;
     }
     return new Error("Erro ao obter a fruta");
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao obter a fruta");
+
+    const errorMessage = error.response?.data?.error || "Erro ao obter a fruta";
+    return new Error(errorMessage);
   }
 };
 

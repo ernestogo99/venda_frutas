@@ -38,7 +38,7 @@ const EditFrutaForm: React.FC = () => {
       FrutasService.getFrutaById(Number(id))
         .then((response) => {
           if (response instanceof Error) {
-            toast.error("Erro ao carregar os dados da fruta.");
+            toast.error(response.message);
           } else {
             setFormData(response);
           }
@@ -87,7 +87,7 @@ const EditFrutaForm: React.FC = () => {
     FrutasService.ediFruta(Number(id), formData)
       .then((response) => {
         if (response instanceof Error) {
-          toast.error("Erro ao editar a fruta. Tente novamente.");
+          toast.error(response.message);
         } else {
           toast.success("Fruta editada com sucesso!");
           setTimeout(() => {

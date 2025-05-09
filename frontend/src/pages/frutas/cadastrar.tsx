@@ -69,7 +69,7 @@ const FrutaForm: React.FC = () => {
     FrutasService.addFruta(formData)
       .then((response) => {
         if (response instanceof Error) {
-          toast.error("Erro ao cadastrar a fruta. Tente novamente.");
+          toast.error(response.message);
         } else {
           toast.success("Fruta cadastrada com sucesso!");
           setTimeout(() => {

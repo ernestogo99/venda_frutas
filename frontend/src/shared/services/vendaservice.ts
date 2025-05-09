@@ -8,9 +8,12 @@ const getRelatorio = async (): Promise<RelatorioVenda[] | Error> => {
       return data;
     }
     return new Error("Erro ao obter o relatorio");
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao obter o relatorio ");
+
+    const errorMessage =
+      error.response?.data?.error || "Erro ao obter o relatorio";
+    return new Error(errorMessage);
   }
 };
 
@@ -18,9 +21,12 @@ const Vender = async (fruta: VendaBody): Promise<VendaResponse | Error> => {
   try {
     const { data } = await api.post("/vendas/", fruta);
     return data as VendaResponse;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    return new Error("erro ao realizar a venda ");
+
+    const errorMessage =
+      error.response?.data?.error || "Erro ao realizar a venda";
+    return new Error(errorMessage);
   }
 };
 
