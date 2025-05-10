@@ -25,13 +25,19 @@ const LoginScreen: React.FC = () => {
     try {
       const { username, password } = formData;
 
-      const { access, user } = await authService.signIn(username, password);
+      const { access, user, refresh } = await authService.signIn(
+        username,
+        password
+      );
 
       console.log("Usuário logado com sucesso:", user);
       console.log("Token de acesso:", access);
+      console.log("Token de refresh:", refresh);
 
       localStorage.setItem("access_token", access);
       sessionStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      sessionStorage.setItem("refresh_token", refresh);
 
       navigate("/frutas");
     } catch (err: any) {
